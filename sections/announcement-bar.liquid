@@ -1,0 +1,19 @@
+{%- if section.settings.text != blank -%}
+  <div class="announcement-bar" role="region" aria-label="Announcement">
+    <p class="announcement-bar__text">{{ section.settings.text }}</p>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Small batch. Hand-knit. Ships in 2–3 weeks."
+    }
+  ]
+}
+{% endschema %}

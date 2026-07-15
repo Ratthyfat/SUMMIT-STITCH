@@ -1,0 +1,62 @@
+{%- comment -%}
+  Full cart page. Most flows use the drawer; this is the fallback at /cart.
+{%- endcomment -%}
+
+<div class="page-width page-content customer-page--wide" style="max-width: 44rem;">
+  <h1>Your cart</h1>
+
+  {%- if cart.item_count == 0 -%}
+    <p style="font-style: italic;">Your cart is empty.</p>
+    <p><a href="{{ routes.all_products_collection_url }}" class="button button--secondary">Continue shopping</a></p>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      {%- for item in cart.items -%}
+        <div class="cart-line">
+          <a href="{{ item.url }}">
+            {%- if item.image -%}
+              <img src="{{ item.image | image_url: width: 180 }}" alt="" loading="lazy" width="90" height="112">
+            {%- endif -%}
+          </a>
+          <div>
+            <p class="cart-line__title">{{ item.product.title }}</p>
+            {%- if item.variant.title != 'Default Title' -%}
+              <p class="cart-line__variant">{{ item.variant.title }}</p>
+            {%- endif -%}
+            <div class="cart-line__row">
+              <div class="quantity">
+                <label for="CartQty-{{ forloop.index }}" class="visually-hidden">Quantity</label>
+                <input
+                  id="CartQty-{{ forloop.index }}"
+                  type="number"
+                  name="updates[]"
+                  value="{{ item.quantity }}"
+                  min="0"
+                >
+              </div>
+              <span>{{ item.final_line_price | money }}</span>
+            </div>
+            <a href="{{ item.url_to_remove }}" class="cart-line__remove">Remove</a>
+          </div>
+        </div>
+      {%- endfor -%}
+
+      <p class="cart-drawer__subtotal">
+        <span>Subtotal</span>
+        <span>{{ cart.items_subtotal_price | money }}</span>
+      </p>
+      <p class="cart-drawer__note">Shipping and taxes calculated at checkout. Free U.S. shipping over $100.</p>
+
+      <div style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+        <button type="submit" name="update" class="button button--secondary">Update</button>
+        <button type="submit" name="checkout" class="button">Check out</button>
+      </div>
+    </form>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": { "show_quantity": false }
+        },
+        "watch_details": { "type": "watch_details" },
+        "description": { "type": "description" }
+      },
+      "block_order": ["title", "price", "buy_buttons", "watch_details", "description"]
+    }
+  },
+  "order": ["main"]
+}

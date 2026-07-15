@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#F2EDE3">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <title>
+      {{- page_title -}}
+      {%- if current_tags %} &ndash; tagged &ldquo;{{ current_tags | join: ', ' }}&rdquo;{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <a class="skip-link" href="#MainContent">Skip to content</a>
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+
+    <main id="MainContent" class="main-content" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    {% render 'cart-drawer' %}
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<header class="site-header">
+  <div class="page-width site-header__inner">
+    <details class="menu-drawer-toggle">
+      <summary aria-label="Open menu">
+        {% render 'icon', icon: 'menu' %}
+      </summary>
+      <nav class="menu-drawer" aria-label="Mobile navigation">
+        <ul class="menu-drawer__list">
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </details>
+
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {{ shop.name }}
+    </a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <ul class="site-nav__list">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            <a
+              href="{{ link.url }}"
+              class="site-nav__link"
+              {% if link.current %}aria-current="page"{% endif %}
+            >{{ link.title }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="{{ routes.search_url }}" class="header-icon-button" aria-label="Search">
+        {% render 'icon', icon: 'search' %}
+      </a>
+      <button type="button" class="header-icon-button" data-cart-open aria-label="Open cart">
+        {% render 'icon', icon: 'cart' %}
+        <span class="cart-count" data-cart-count data-count="{{ cart.item_count }}">{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

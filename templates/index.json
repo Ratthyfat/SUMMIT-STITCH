@@ -1,0 +1,53 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Colorado Springs, CO",
+        "heading": "Summit & Stitch",
+        "subheading": "Made by hand. Built to keep.",
+        "cta_label": "Shop Beanies",
+        "cta_link": "shopify:\/\/collections\/beanies",
+        "secondary_cta_label": "Our Story",
+        "secondary_cta_link": "shopify:\/\/pages\/our-story"
+      }
+    },
+    "statement": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "Small batch, always",
+        "heading": "The kind of thing you wear until it tells a story",
+        "text": "<p>Every piece is knit by hand in Colorado Springs — one pair of hands, one skein at a time. No factory, no season-chasing, no rush. Just good yarn, honest work, and things made to be kept.<\/p>"
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The lineup",
+        "heading": "Beanies",
+        "collection": "beanies",
+        "products_to_show": 4,
+        "show_view_all": true
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "image_first",
+        "eyebrow": "Our story",
+        "heading": "Two of us, a pair of needles, and the Front Range",
+        "text": "<p>Summit & Stitch started at our kitchen table — one of us knitting, the other keeping the coffee going. We make things slowly, on purpose, and we'd rather make ten pieces that last a decade than a hundred that don't.<\/p>",
+        "link_label": "Read our story",
+        "link": "shopify:\/\/pages\/our-story"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Be first to know about new drops.",
+        "text": "Small batches sell through. We'll write when something new comes off the needles — nothing more."
+      }
+    }
+  },
+  "order": ["hero", "statement", "featured", "story", "newsletter"]
+}

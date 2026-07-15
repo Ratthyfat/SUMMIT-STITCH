@@ -1,0 +1,42 @@
+<div class="page-width customer-page customer-page--wide">
+  <h1>Addresses</h1>
+  <p style="text-align: center;"><a href="{{ routes.account_url }}">Back to account</a></p>
+
+  <div style="text-align: center; margin-bottom: var(--space-3);">
+    <button type="button" class="button button--secondary" onclick="document.getElementById('AddAddress').hidden = !document.getElementById('AddAddress').hidden">
+      Add a new address
+    </button>
+  </div>
+
+  <div id="AddAddress" hidden>
+    {%- form 'customer_address', customer.new_address -%}
+      {% render 'address-fields', form: form %}
+      <button type="submit" class="button button--full">Save</button>
+    {%- endform -%}
+  </div>
+
+  {%- paginate customer.addresses by 6 -%}
+    {%- for address in customer.addresses -%}
+      <div style="border-top: 1px solid var(--hairline); padding: var(--space-2) 0;">
+        {%- if address == customer.default_address -%}
+          <span class="label" style="color: var(--color-sage);">Default</span>
+        {%- endif -%}
+        <p>{{ address | format_address }}</p>
+        <p>
+          <button type="button" class="cart-line__remove" onclick="document.getElementById('EditAddress-{{ address.id }}').hidden = !document.getElementById('EditAddress-{{ address.id }}').hidden">Edit</button>
+          &nbsp;
+          <button type="button" class="cart-line__remove" onclick="if (confirm('Delete this address?')) document.getElementById('DeleteAddress-{{ address.id }}').submit()">Delete</button>
+        </p>
+        <form id="DeleteAddress-{{ address.id }}" method="post" action="/account/addresses/{{ address.id }}">
+          <input type="hidden" name="_method" value="delete">
+        </form>
+        <div id="EditAddress-{{ address.id }}" hidden>
+          {%- form 'customer_address', address -%}
+            {% render 'address-fields', form: form %}
+            <button type="submit" class="button button--full">Save</button>
+          {%- endform -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endpaginate -%}
+</div>

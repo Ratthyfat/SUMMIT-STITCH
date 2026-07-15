@@ -1,0 +1,19 @@
+<div class="page-width customer-page">
+  <h1>Activate account</h1>
+
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}
+      <p class="form-status form-status--error">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+    <div class="field">
+      <label for="ActivatePassword">Password</label>
+      <input id="ActivatePassword" type="password" name="customer[password]" autocomplete="new-password" required>
+    </div>
+    <div class="field">
+      <label for="ActivatePasswordConfirm">Confirm password</label>
+      <input id="ActivatePasswordConfirm" type="password" name="customer[password_confirmation]" autocomplete="new-password" required>
+    </div>
+    <button type="submit" class="button button--full">Activate account</button>
+    <button type="submit" name="decline" class="button button--secondary button--full" style="margin-top: var(--space-1);">Decline invitation</button>
+  {%- endform -%}
+</div>

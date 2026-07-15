@@ -1,0 +1,35 @@
+<div class="page-width">
+  <header class="collection-header">
+    <h1>Collections</h1>
+  </header>
+
+  <ul class="product-grid" role="list">
+    {%- for collection in collections -%}
+      <li>
+        <article class="card-product">
+          <div class="card-product__media">
+            {%- assign collection_image = collection.image | default: collection.products.first.featured_image -%}
+            {%- if collection_image -%}
+              <img
+                src="{{ collection_image | image_url: width: 720 }}"
+                alt="{{ collection.title | escape }}"
+                loading="lazy"
+                width="720"
+                height="900"
+              >
+            {%- endif -%}
+          </div>
+          <h3 class="card-product__title"><a href="{{ collection.url }}">{{ collection.title }}</a></h3>
+          <p class="card-product__price label">{{ collection.products_count }} {{ collection.products_count | pluralize: 'piece', 'pieces' }}</p>
+        </article>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": []
+}
+{% endschema %}

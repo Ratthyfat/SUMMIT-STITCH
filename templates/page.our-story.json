@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": { "type": "main-page" },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Be first to know about new drops.",
+        "text": "Small batches sell through. We'll write when something new comes off the needles — nothing more."
+      }
+    }
+  },
+  "order": ["main", "newsletter"]
+}

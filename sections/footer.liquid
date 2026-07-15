@@ -1,0 +1,53 @@
+<footer class="site-footer">
+  <div class="page-width">
+    <div class="site-footer__grid">
+      <div>
+        <p class="site-footer__brand-name">{{ shop.name }}</p>
+        <p class="site-footer__tagline">{{ settings.tagline }}</p>
+        <p>Handcrafted knitwear from Colorado Springs. The kind of thing you wear until it tells a story.</p>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Shop</h2>
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Elsewhere</h2>
+        <ul>
+          {%- if settings.social_instagram != blank -%}
+            <li><a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a></li>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <li><a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a></li>
+          {%- endif -%}
+          {%- if settings.contact_email != blank -%}
+            <li><a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      &copy; {{ 'now' | date: '%Y' }} {{ shop.name }} · Colorado Springs, CO
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Footer menu",
+      "default": "footer"
+    }
+  ]
+}
+{% endschema %}

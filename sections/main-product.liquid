@@ -1,0 +1,348 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign is_watch = false
+  if product.template_suffix == 'watch' or product.tags contains 'watch'
+    assign is_watch = true
+  endif
+-%}
+
+<div class="page-width">
+  <div
+    class="product"
+    data-product-info
+    data-low-stock-threshold="{{ settings.low_stock_threshold | default: 4 }}"
+  >
+    {%- comment -%} ------------------------------------------ media {%- endcomment -%}
+    <div class="product__media" data-product-media>
+      {%- if is_watch and product.available == false -%}
+        <span class="product__sold-badge">Sold</span>
+      {%- endif -%}
+
+      <div class="product__media-main">
+        {%- assign featured = current_variant.featured_media | default: product.featured_media -%}
+        {%- if featured -%}
+          <img
+            data-main-image
+            src="{{ featured | image_url: width: 1100 }}"
+            srcset="{{ featured | image_url: width: 550 }} 550w, {{ featured | image_url: width: 1100 }} 1100w"
+            sizes="(min-width: 48rem) 58vw, 100vw"
+            alt="{{ featured.alt | default: product.title | escape }}"
+            width="1100"
+            height="1375"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- if product.media.size > 1 -%}
+        <ul class="product__thumbs" role="list">
+          {%- for media in product.media limit: 5 -%}
+            <li>
+              <button
+                type="button"
+                data-thumb="{{ media | image_url: width: 1100 }}"
+                data-thumb-alt="{{ media.alt | escape }}"
+                {% if media == featured %}aria-current="true"{% endif %}
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img src="{{ media | image_url: width: 180 }}" alt="" loading="lazy" width="180" height="180">
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ------------------------------------------- info {%- endcomment -%}
+    <div class="product__info">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'title' -%}
+            <div {{ block.shopify_attributes }}>
+              {%- if is_watch -%}
+                <span class="label product__vendor">One of one · Vintage</span>
+              {%- endif -%}
+              <h1 class="product__title">{{ product.title }}</h1>
+            </div>
+
+          {%- when 'price' -%}
+            <p class="product__price" {{ block.shopify_attributes }}>
+              <span data-price>{{ current_variant.price | money }}</span>
+            </p>
+
+          {%- when 'variant_picker' -%}
+            {%- unless product.has_only_default_variant or is_watch -%}
+              <div {{ block.shopify_attributes }}>
+                {%- for option in product.options_with_values -%}
+                  {%- assign option_index = forloop.index0 -%}
+                  <fieldset class="variant-swatches" data-option-index="{{ option_index }}">
+                    <legend class="label">
+                      {{ option.name }} —
+                      <span class="variant-swatches__selected" data-selected-value>{{ option.selected_value }}</span>
+                    </legend>
+                    {%- for value in option.values -%}
+                      <label class="variant-swatch">
+                        <input
+                          type="radio"
+                          name="option-{{ section.id }}-{{ option_index }}"
+                          value="{{ value | escape }}"
+                          {% if option.selected_value == value %}checked{% endif %}
+                        >
+                        <span class="swatch swatch--{{ value | handleize }}" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ value }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </fieldset>
+                {%- endfor -%}
+              </div>
+            {%- endunless -%}
+
+          {%- when 'buy_buttons' -%}
+            <div {{ block.shopify_attributes }}>
+              <p class="product__stock" data-stock-note aria-live="polite">
+                {%- liquid
+                  assign threshold = settings.low_stock_threshold | default: 4
+                  if current_variant.available and current_variant.inventory_management != blank and current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= threshold
+                    if current_variant.inventory_quantity == 1
+                      echo 'Only 1 left'
+                    else
+                      echo 'Only ' | append: current_variant.inventory_quantity | append: ' left'
+                    endif
+                  endif
+                -%}
+              </p>
+
+              <form method="post" action="{{ routes.cart_add_url }}" data-product-form>
+                <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+                {%- if block.settings.show_quantity and is_watch == false -%}
+                  <div class="field" style="margin-bottom: var(--space-2);">
+                    <label for="Quantity-{{ section.id }}">Quantity</label>
+                    <div class="quantity">
+                      <button type="button" data-qty-change="-1" aria-label="Decrease quantity">&minus;</button>
+                      <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1">
+                      <button type="button" data-qty-change="1" aria-label="Increase quantity">+</button>
+                    </div>
+                  </div>
+                {%- else -%}
+                  <input type="hidden" name="quantity" value="1">
+                {%- endif -%}
+
+                <button
+                  type="submit"
+                  class="button button--full"
+                  data-add-label="Add to cart"
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  {%- if current_variant.available -%}
+                    Add to cart
+                  {%- elsif is_watch -%}
+                    Sold
+                  {%- else -%}
+                    Sold out
+                  {%- endif -%}
+                </button>
+                <p class="form-status" data-form-status role="alert"></p>
+              </form>
+            </div>
+
+          {%- when 'waitlist_form' -%}
+            <div class="waitlist" {{ block.shopify_attributes }}>
+              <h2 class="waitlist__heading">{{ block.settings.heading }}</h2>
+              <p>{{ block.settings.text }}</p>
+              {%- form 'contact' -%}
+                <input type="hidden" name="contact[waitlist_product]" value="{{ product.title | escape }}">
+                <input type="hidden" name="contact[tags]" value="waitlist">
+                {%- if form.posted_successfully? -%}
+                  <p class="form-status">You're on the list. We'll email you when this run opens.</p>
+                {%- else -%}
+                  <div class="field">
+                    <label for="WaitlistEmail-{{ section.id }}">Email</label>
+                    <input
+                      id="WaitlistEmail-{{ section.id }}"
+                      type="email"
+                      name="contact[email]"
+                      placeholder="you@example.com"
+                      required
+                      autocomplete="email"
+                    >
+                  </div>
+                  <button type="submit" class="button button--secondary button--full">Join the waitlist</button>
+                  {%- if form.errors -%}
+                    <p class="form-status form-status--error">Please enter a valid email address.</p>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+
+          {%- when 'lead_time' -%}
+            {%- unless is_watch -%}
+              <p class="product__lead-time" {{ block.shopify_attributes }}>
+                {{ block.settings.text | default: settings.lead_time_note }}
+              </p>
+            {%- endunless -%}
+
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <div class="product__description" {{ block.shopify_attributes }}>
+                {{ product.description }}
+              </div>
+            {%- endif -%}
+
+          {%- when 'watch_details' -%}
+            {%- liquid
+              assign w_year = product.metafields.watch.year
+              assign w_reference = product.metafields.watch.reference
+              assign w_movement = product.metafields.watch.movement
+              assign w_case_size = product.metafields.watch.case_size
+              assign w_condition = product.metafields.watch.condition
+              assign w_service = product.metafields.watch.service_history
+            -%}
+            {%- if w_year != blank or w_movement != blank or w_condition != blank or w_service != blank or w_reference != blank or w_case_size != blank -%}
+              <div class="watch-details" {{ block.shopify_attributes }}>
+                <h2 class="watch-details__heading">Details &amp; provenance</h2>
+                <dl>
+                  {%- if w_year != blank -%}<dt>Year</dt><dd>{{ w_year }}</dd>{%- endif -%}
+                  {%- if w_reference != blank -%}<dt>Reference</dt><dd>{{ w_reference }}</dd>{%- endif -%}
+                  {%- if w_movement != blank -%}<dt>Movement</dt><dd>{{ w_movement }}</dd>{%- endif -%}
+                  {%- if w_case_size != blank -%}<dt>Case</dt><dd>{{ w_case_size }}</dd>{%- endif -%}
+                  {%- if w_condition != blank -%}<dt>Condition</dt><dd>{{ w_condition | metafield_tag }}</dd>{%- endif -%}
+                  {%- if w_service != blank -%}<dt>Service</dt><dd>{{ w_service | metafield_tag }}</dd>{%- endif -%}
+                </dl>
+              </div>
+            {%- endif -%}
+
+          {%- when 'cross_sell' -%}
+            {%- assign cross_products = block.settings.products -%}
+            {%- if cross_products.count > 0 -%}
+              <div class="cross-sell" {{ block.shopify_attributes }}>
+                <h2 class="cross-sell__heading">{{ block.settings.heading }}</h2>
+                <div class="cross-sell__items">
+                  {%- for cross_product in cross_products limit: 2 -%}
+                    {%- unless cross_product.id == product.id -%}
+                      <a href="{{ cross_product.url }}" class="cross-sell__item">
+                        {%- if cross_product.featured_image -%}
+                          <img
+                            src="{{ cross_product.featured_image | image_url: width: 180 }}"
+                            alt="{{ cross_product.featured_image.alt | default: cross_product.title | escape }}"
+                            loading="lazy"
+                            width="90"
+                            height="90"
+                          >
+                        {%- endif -%}
+                        <span>
+                          <span class="cross-sell__item-title">{{ cross_product.title }}</span><br>
+                          <span class="label">{% render 'price', product: cross_product %}</span>
+                        </span>
+                      </a>
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- comment -%} Variant data for global.js {%- endcomment -%}
+      <script type="application/json" data-variants-json>
+        [
+          {%- for variant in product.variants -%}
+            {
+              "id": {{ variant.id }},
+              "title": {{ variant.title | json }},
+              "available": {{ variant.available }},
+              "price": {{ variant.price }},
+              "options": {{ variant.options | json }},
+              "inventory_managed": {% if variant.inventory_management != blank %}true{% else %}false{% endif %},
+              "inventory_quantity": {{ variant.inventory_quantity | default: 0 }},
+              "featured_media_url": {% if variant.featured_media %}{{ variant.featured_media | image_url: width: 1100 | json }}{% else %}null{% endif %},
+              "featured_media_alt": {% if variant.featured_media %}{{ variant.featured_media.alt | json }}{% else %}null{% endif %}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      </script>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product",
+  "blocks": [
+    { "type": "title", "name": "Title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    { "type": "variant_picker", "name": "Colorway picker", "limit": 1 },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "label": "Show quantity selector",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "waitlist_form",
+      "name": "Waitlist signup",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Limited run — join the waitlist"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Each run is 8–10 pieces, knit by hand. Leave your email and we'll let you know before the next run opens."
+        }
+      ]
+    },
+    {
+      "type": "lead_time",
+      "name": "Lead time note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "info": "Leave blank to use the theme setting."
+        }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1 },
+    {
+      "type": "watch_details",
+      "name": "Watch details (metafields)",
+      "limit": 1
+    },
+    {
+      "type": "cross_sell",
+      "name": "Complete the look",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Complete the look"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products",
+          "limit": 2
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

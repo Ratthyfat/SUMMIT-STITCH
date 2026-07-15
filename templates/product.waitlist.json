@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "description": { "type": "description" },
+        "waitlist": {
+          "type": "waitlist_form",
+          "settings": {
+            "heading": "Limited run — join the waitlist",
+            "text": "Each run is 8–10 pieces, knit by hand. Leave your email and we'll let you know before the next run opens."
+          }
+        }
+      },
+      "block_order": ["title", "price", "description", "waitlist"]
+    }
+  },
+  "order": ["main"]
+}

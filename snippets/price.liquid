@@ -1,0 +1,19 @@
+{%- comment -%}
+  Usage: {% render 'price', product: product %}
+  Shows "From $X" when variants differ in price; strikethrough compare-at.
+{%- endcomment -%}
+
+{%- liquid
+  assign target = product.selected_or_first_available_variant | default: product.variants.first
+-%}
+
+<span class="price">
+  {%- if product.price_varies -%}
+    From {{ product.price_min | money }}
+  {%- else -%}
+    {%- if target.compare_at_price > target.price -%}
+      <s>{{ target.compare_at_price | money }}</s>
+    {%- endif -%}
+    {{ target.price | money }}
+  {%- endif -%}
+</span>

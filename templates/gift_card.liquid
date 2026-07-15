@@ -1,0 +1,29 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gift card — {{ shop.name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Crimson+Text&display=swap" rel="stylesheet">
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+  </head>
+  <body>
+    <div class="password-page">
+      <span class="label" style="color: var(--color-sage);">{{ shop.name }}</span>
+      <h1>Here's your gift card</h1>
+      <p class="product__price">{{ gift_card.initial_value | money }}</p>
+      <p class="label" style="border: 1px solid var(--color-gold); padding: var(--space-2); letter-spacing: 0.2em;">
+        {{ gift_card.code | format_code }}
+      </p>
+      {%- if gift_card.enabled == false or gift_card.expired -%}
+        <p class="form-status form-status--error">This gift card has expired.</p>
+      {%- else -%}
+        <p>Use this code at checkout. Balance: {{ gift_card.balance | money }}</p>
+      {%- endif -%}
+      <p><a href="{{ shop.url }}" class="button button--secondary">Continue shopping</a></p>
+    </div>
+  </body>
+</html>

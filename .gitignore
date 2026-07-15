@@ -1,0 +1,8 @@
+# Shopify CLI
+.shopify/
+shopify.theme.toml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

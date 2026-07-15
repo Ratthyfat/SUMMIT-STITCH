@@ -1,0 +1,9 @@
+root: .
+
+# Copy lives in section defaults / templates on purpose for this small,
+# single-language store — translation keys would add noise without value yet.
+MissingTemplate:
+  enabled: true
+
+TranslationKeyExists:
+  enabled: false

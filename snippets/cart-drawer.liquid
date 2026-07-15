@@ -1,0 +1,30 @@
+{%- comment -%}
+  Slide-out cart drawer. Markup is a shell; line items are rendered
+  client-side by global.js from /cart.js so the drawer is always current.
+{%- endcomment -%}
+
+<button type="button" class="cart-drawer__overlay" id="CartDrawerOverlay" aria-label="Close cart" data-cart-close tabindex="-1"></button>
+
+<aside class="cart-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true">
+  <header class="cart-drawer__header">
+    <h2>Your cart</h2>
+    <button type="button" class="cart-drawer__close" data-cart-close aria-label="Close cart">
+      {% render 'icon', icon: 'close' %}
+    </button>
+  </header>
+
+  <div class="cart-drawer__items" data-cart-items>
+    {%- if cart.item_count == 0 -%}
+      <p class="cart-drawer__empty">Your cart is empty.</p>
+    {%- endif -%}
+  </div>
+
+  <footer class="cart-drawer__footer" data-cart-footer {% if cart.item_count == 0 %}hidden{% endif %}>
+    <p class="cart-drawer__subtotal">
+      <span>Subtotal</span>
+      <span data-cart-subtotal>{{ cart.items_subtotal_price | money }}</span>
+    </p>
+    <p class="cart-drawer__note">Shipping and taxes calculated at checkout. Free U.S. shipping over $100.</p>
+    <a href="/checkout" class="button button--full">Check out</a>
+  </footer>
+</aside>

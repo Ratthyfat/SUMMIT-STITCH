@@ -1,0 +1,23 @@
+<div class="page-width">
+  <article class="page-content">
+    <span class="label article-card__date">{{ article.published_at | date: '%B %e, %Y' }}</span>
+    <h1>{{ article.title }}</h1>
+    {%- if article.image -%}
+      <img
+        src="{{ article.image | image_url: width: 1100 }}"
+        alt="{{ article.image.alt | escape }}"
+        style="margin-bottom: var(--space-3);"
+        width="1100"
+        height="733"
+      >
+    {%- endif -%}
+    <div>{{ article.content }}</div>
+  </article>
+</div>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

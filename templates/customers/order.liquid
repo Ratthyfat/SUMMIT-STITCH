@@ -1,0 +1,29 @@
+<div class="page-width customer-page customer-page--wide">
+  <h1>Order {{ order.name }}</h1>
+  <p style="text-align: center;">Placed on {{ order.created_at | date: '%B %e, %Y' }} · <a href="{{ routes.account_url }}">Back to account</a></p>
+
+  <table class="order-table">
+    <thead>
+      <tr><th>Product</th><th>Quantity</th><th>Price</th></tr>
+    </thead>
+    <tbody>
+      {%- for line_item in order.line_items -%}
+        <tr>
+          <td>
+            {{ line_item.title }}
+            {%- if line_item.variant.title != 'Default Title' %} — {{ line_item.variant.title }}{% endif -%}
+          </td>
+          <td>{{ line_item.quantity }}</td>
+          <td>{{ line_item.final_line_price | money }}</td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="2">Subtotal</td><td>{{ order.line_items_subtotal_price | money }}</td></tr>
+      {%- for shipping_method in order.shipping_methods -%}
+        <tr><td colspan="2">Shipping ({{ shipping_method.title }})</td><td>{{ shipping_method.price | money }}</td></tr>
+      {%- endfor -%}
+      <tr><td colspan="2"><strong>Total</strong></td><td><strong>{{ order.total_net_amount | money }}</strong></td></tr>
+    </tfoot>
+  </table>
+</div>

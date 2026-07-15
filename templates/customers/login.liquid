@@ -1,0 +1,38 @@
+<div class="page-width customer-page">
+  <h1>Log in</h1>
+
+  {%- form 'customer_login' -%}
+    {%- if form.errors -%}
+      <p class="form-status form-status--error">Incorrect email or password.</p>
+    {%- endif -%}
+    <div class="field">
+      <label for="CustomerEmail">Email</label>
+      <input id="CustomerEmail" type="email" name="customer[email]" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="CustomerPassword">Password</label>
+      <input id="CustomerPassword" type="password" name="customer[password]" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="button button--full">Sign in</button>
+    <p style="margin-top: var(--space-2); text-align: center;">
+      <a href="#recover" onclick="document.getElementById('RecoverForm').hidden = false; return false;">Forgot your password?</a>
+      &nbsp;·&nbsp;
+      <a href="{{ routes.account_register_url }}">Create account</a>
+    </p>
+  {%- endform -%}
+
+  <div id="RecoverForm" {% unless form.posted_successfully? %}hidden{% endunless %} style="margin-top: var(--space-3);">
+    <h2>Reset your password</h2>
+    <p>We'll send you an email to reset your password.</p>
+    {%- form 'recover_customer_password' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-status">If that email exists, a reset link is on its way.</p>
+      {%- endif -%}
+      <div class="field">
+        <label for="RecoverEmail">Email</label>
+        <input id="RecoverEmail" type="email" name="email" autocomplete="email" required>
+      </div>
+      <button type="submit" class="button button--secondary button--full">Submit</button>
+    {%- endform -%}
+  </div>
+</div>

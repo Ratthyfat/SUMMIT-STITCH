@@ -1,0 +1,57 @@
+{%- comment -%}
+  Usage: {% render 'card-product', product: product %}
+  Image (hover swap to second image), title, price, colorway swatches.
+  Badges: "Sold" for one-of-one watch pieces, "Sold out" otherwise,
+  "Waitlist" for waitlist-template products.
+{%- endcomment -%}
+
+<article class="card-product">
+  <div class="card-product__media">
+    {%- if product.available == false -%}
+      {%- if product.tags contains 'watch' -%}
+        <span class="card-product__badge">Sold</span>
+      {%- else -%}
+        <span class="card-product__badge">Sold out</span>
+      {%- endif -%}
+    {%- elsif product.template_suffix == 'waitlist' -%}
+      <span class="card-product__badge card-product__badge--waitlist">Waitlist</span>
+    {%- endif -%}
+
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 720 }}"
+        srcset="{{ product.featured_image | image_url: width: 360 }} 360w, {{ product.featured_image | image_url: width: 720 }} 720w"
+        sizes="(min-width: 48rem) 33vw, 50vw"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="720"
+        height="900"
+      >
+      {%- if product.images[1] -%}
+        <img
+          class="card-product__image--hover"
+          src="{{ product.images[1] | image_url: width: 720 }}"
+          alt=""
+          loading="lazy"
+          width="720"
+          height="900"
+        >
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <h3 class="card-product__title">
+    <a href="{{ product.url }}">{{ product.title }}</a>
+  </h3>
+
+  <p class="card-product__price label">{% render 'price', product: product %}</p>
+
+  {%- assign colorways = product.options_with_values | where: 'name', 'Colorway' | first -%}
+  {%- if colorways -%}
+    <div class="card-product__swatches" aria-label="Available colorways">
+      {%- for value in colorways.values -%}
+        <span class="swatch swatch--small swatch--{{ value | handleize }}" title="{{ value }}"></span>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</article>

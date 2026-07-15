@@ -1,0 +1,60 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Summit & Stitch",
+    "theme_version": "1.0.0",
+    "theme_author": "Summit & Stitch",
+    "theme_documentation_url": "https://summitandstitch.co",
+    "theme_support_url": "https://summitandstitch.co"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "text",
+        "id": "tagline",
+        "label": "Tagline",
+        "default": "Made by hand. Built to keep."
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "default": "https:\/\/instagram.com\/summitandstitchco"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL",
+        "default": "https:\/\/tiktok.com\/@summitandstitchco"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Contact email",
+        "default": "hello@summitandstitch.co"
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "settings": [
+      {
+        "type": "range",
+        "id": "low_stock_threshold",
+        "label": "Low stock threshold",
+        "info": "Show “Only X left” when inventory is at or below this number.",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "text",
+        "id": "lead_time_note",
+        "label": "Hand-knit lead time note",
+        "default": "This piece is hand-knit to order — please allow 2–3 weeks before it ships."
+      }
+    ]
+  }
+]

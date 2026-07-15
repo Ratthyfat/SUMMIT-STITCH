@@ -1,0 +1,55 @@
+<div class="page-width search-page">
+  <div class="page-content">
+    <h1>Search</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="inline-form" style="margin-bottom: var(--space-3);">
+      <label for="SearchInput" class="visually-hidden">Search</label>
+      <input
+        id="SearchInput"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="Search the shop"
+        style="border-color: var(--hairline); color: var(--ink-strong);"
+      >
+      <button type="submit" class="button button--secondary">Search</button>
+    </form>
+  </div>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 12 -%}
+      {%- if search.results_count == 0 -%}
+        <p style="text-align: center; font-style: italic;">No results for &ldquo;{{ search.terms }}&rdquo;. Try a different search.</p>
+      {%- else -%}
+        <ul class="product-grid" role="list">
+          {%- for item in search.results -%}
+            <li>
+              {%- if item.object_type == 'product' -%}
+                {% render 'card-product', product: item %}
+              {%- else -%}
+                <article>
+                  <h3 class="card-product__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                  <p>{{ item.content | strip_html | truncate: 120 }}</p>
+                </article>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&larr; Previous</a>{%- endif -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next &rarr;</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}
