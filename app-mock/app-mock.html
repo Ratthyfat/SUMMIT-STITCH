@@ -1,0 +1,692 @@
+<title>Summit &amp; Stitch — App Mockup</title>
+<style>
+  /* =====================================================================
+     Summit & Stitch — React Native app mockup
+     Interactive phone-frame preview of the Expo companion app.
+     Visual rules from the brief: Aged Linen screens, navy product hero,
+     white cards with 1px Antique Gold borders, brick CTAs, no Material
+     shadows. Palatino/Georgia stand in for Playfair/Crimson; system sans
+     stands in for Inter (sandbox blocks font CDNs).
+     ===================================================================== */
+
+  :root {
+    --linen: #F2EDE3;
+    --navy: #1E2D40;
+    --slate: #3D4A52;
+    --brick: #A0473A;
+    --sage: #7A8C6E;
+    --gold: #C4A267;
+    --charcoal: #181E22;
+
+    --font-display: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --font-body: Georgia, 'Times New Roman', serif;
+    --font-label: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem 1rem;
+    font-family: var(--font-body);
+    color: var(--slate);
+  }
+
+  .mock-note {
+    font-family: var(--font-label);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+  }
+  .mock-sub {
+    font-family: var(--font-label);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(242,237,227,0.45);
+    text-align: center;
+    max-width: 24rem;
+    line-height: 1.8;
+  }
+
+  /* ------------------------------------------------------ phone frame --- */
+
+  .phone {
+    width: min(390px, 96vw);
+    height: min(800px, 88vh);
+    background: var(--linen);
+    border-radius: 42px;
+    border: 10px solid #0D1114;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .notch {
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 118px; height: 26px;
+    background: #0D1114;
+    border-radius: 14px;
+    z-index: 50;
+  }
+
+  .screens { flex: 1; position: relative; overflow: hidden; }
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    background: var(--linen);
+    display: none;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.is-active { display: block; animation: screenIn 350ms ease both; }
+  @keyframes screenIn { from { opacity: 0; transform: translateY(10px); } }
+  @media (prefers-reduced-motion: reduce) { .screen.is-active { animation: none; } }
+
+  h1, h2, h3 { font-family: var(--font-display); color: var(--navy); font-weight: 600; line-height: 1.12; margin: 0 0 0.6rem; text-wrap: balance; }
+  p { margin: 0 0 0.8rem; }
+  .label {
+    font-family: var(--font-label);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: var(--font-label);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: var(--brick);
+    border: 1px solid var(--brick);
+    color: var(--linen);
+    padding: 0.85rem 1.5rem;
+    text-align: center;
+  }
+  .btn:active { background: #86392E; }
+  .btn--full { display: block; width: 100%; }
+  .btn--ghost { background: transparent; border-color: var(--navy); color: var(--navy); }
+
+  /* knit texture stand-in for clay imagery */
+  .knit {
+    position: relative;
+    background-color: var(--yarn, #B9B2A4);
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 3px, rgba(255,255,255,0) 3px 7px, rgba(0,0,0,0.14) 7px 10px, rgba(0,0,0,0) 10px 14px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 2px, rgba(255,255,255,0.05) 2px 5px, rgba(0,0,0,0) 5px 9px);
+  }
+  .knit::after { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 100% at 50% 30%, rgba(255,255,255,0.10), rgba(24,30,34,0.22)); }
+  .knit--linen { --yarn: #DDD3BC; } .knit--navy { --yarn: #24354B; }
+  .knit--slate { --yarn: #46545D; } .knit--brick { --yarn: #A0473A; }
+  .knit--sage { --yarn: #7A8C6E; } .knit--gold { --yarn: #C4A267; }
+  .art-tag {
+    position: absolute; left: 50%; bottom: 0.6rem; transform: translateX(-50%);
+    z-index: 1;
+    font-family: var(--font-label); font-size: 0.5rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    background: rgba(242,237,227,0.92); color: var(--slate);
+    padding: 0.2rem 0.5rem; white-space: nowrap;
+  }
+
+  /* -------------------------------------------------------- shop home --- */
+
+  .app-hero {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(180deg, #2A3D55 0%, var(--navy) 70%);
+    color: var(--linen);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.4rem;
+    overflow: hidden;
+  }
+  .app-hero__peaks { position: absolute; inset: auto 0 0 0; width: 100%; height: 55%; }
+  .app-hero h1 { color: var(--linen); font-size: 2rem; margin-bottom: 0.1rem; position: relative; }
+  .app-hero .tag { font-style: italic; color: rgba(242,237,227,0.9); position: relative; margin: 0; }
+  .app-hero .label { color: var(--gold); position: relative; }
+
+  .pad { padding: 1.4rem; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+  .pcard {
+    background: #FFFFFF;
+    border: 1px solid var(--gold);
+    padding: 0.7rem;
+    cursor: pointer;
+  }
+  .pcard .art { aspect-ratio: 1; margin-bottom: 0.55rem; overflow: hidden; }
+  .pcard h3 { font-size: 0.95rem; margin-bottom: 0.15rem; }
+  .pcard .price { font-family: var(--font-label); font-size: 0.58rem; font-weight: 600; letter-spacing: 0.14em; color: var(--slate); margin: 0 0 0.4rem; }
+  .dots { display: flex; gap: 0.28rem; }
+  .dot { width: 0.72rem; height: 0.72rem; border-radius: 50%; border: 1px solid rgba(24,30,34,0.25); background: var(--yarn); }
+  .dot--linen { --yarn: #DDD3BC; } .dot--navy { --yarn: #1E2D40; }
+  .dot--slate { --yarn: #3D4A52; } .dot--brick { --yarn: #A0473A; }
+
+  .banner {
+    background: #FFFFFF;
+    border: 1px solid var(--gold);
+    padding: 1rem 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 0.9rem;
+  }
+  .banner p { margin: 0; font-size: 0.92rem; }
+  .banner .label { display: block; margin-bottom: 0.15rem; }
+
+  /* ---------------------------------------------------- product screen --- */
+
+  .back-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1.1rem 0;
+  }
+  .back-btn {
+    font-family: var(--font-label); font-size: 0.6rem; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    background: none; border: none; color: var(--slate); padding: 0.4rem 0;
+    cursor: pointer;
+  }
+  .pdp-art { height: 280px; overflow: hidden; position: relative; margin: 0.7rem 1.1rem 0; }
+  .pdp-body { padding: 1.1rem 1.4rem 1.6rem; }
+  .pdp-body .price { font-size: 1.15rem; color: var(--navy); margin-bottom: 0.8rem; }
+  .stock {
+    font-family: var(--font-label); font-size: 0.58rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--brick);
+    min-height: 1em; margin: 0.5rem 0 0.7rem;
+  }
+
+  .swatches { display: flex; gap: 0.55rem; margin-top: 0.5rem; }
+  .swatch {
+    width: 2rem; height: 2rem; border-radius: 50%;
+    border: 1px solid rgba(24,30,34,0.25);
+    background: var(--yarn);
+    cursor: pointer;
+    position: relative;
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .swatch[aria-pressed='true'] { transform: scale(1.12); }
+  .swatch[aria-pressed='true']::after {
+    content: '';
+    position: absolute; inset: -5px;
+    border: 2px solid var(--navy);
+    border-radius: 50%;
+  }
+  .swatch--linen { --yarn: #DDD3BC; } .swatch--navy { --yarn: #1E2D40; }
+  .swatch--slate { --yarn: #3D4A52; } .swatch--brick { --yarn: #A0473A; }
+
+  .lead { font-style: italic; border-left: 2px solid var(--gold); padding-left: 0.9rem; margin: 1rem 0; font-size: 0.95rem; }
+
+  /* --------------------------------------------------- story / journal --- */
+
+  .story-hero { height: 220px; overflow: hidden; position: relative; }
+  .prose { padding: 1.4rem; max-width: 34rem; }
+  .prose p { font-size: 0.98rem; }
+
+  .jcard {
+    background: #FFFFFF;
+    border: 1px solid var(--gold);
+    margin-bottom: 1rem;
+    cursor: default;
+  }
+  .jcard .art { height: 130px; overflow: hidden; position: relative; }
+  .jcard .body { padding: 0.9rem 1rem; }
+  .jcard h3 { font-size: 1.02rem; margin-bottom: 0.2rem; }
+  .jcard .date { font-family: var(--font-label); font-size: 0.56rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); }
+  .jcard p { font-size: 0.9rem; margin: 0.4rem 0 0; }
+
+  /* ----------------------------------------------------------- market --- */
+
+  .map {
+    height: 170px;
+    position: relative;
+    background:
+      radial-gradient(70% 60% at 60% 40%, rgba(122,140,110,0.35), rgba(122,140,110,0) 70%),
+      linear-gradient(160deg, #E4DBC6 0%, #D9CFB6 100%);
+    border-bottom: 1px solid var(--gold);
+  }
+  .map::before, .map::after {
+    content: '';
+    position: absolute;
+    background: rgba(61,74,82,0.18);
+  }
+  .map::before { left: 12%; top: 0; bottom: 0; width: 3px; transform: rotate(8deg); }
+  .map::after { left: 0; right: 0; top: 58%; height: 3px; transform: rotate(-3deg); }
+  .pin {
+    position: absolute; left: 56%; top: 34%;
+    width: 16px; height: 16px;
+    background: var(--brick);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid #fff;
+  }
+  .mrow {
+    background: #FFFFFF;
+    border: 1px solid var(--gold);
+    padding: 0.85rem 1rem;
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    margin-bottom: 0.7rem;
+  }
+  .mrow .day {
+    font-family: var(--font-label); font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--linen);
+    background: var(--sage);
+    padding: 0.5rem 0.55rem;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .mrow h3 { font-size: 0.95rem; margin: 0 0 0.1rem; }
+  .mrow p { margin: 0; font-size: 0.85rem; }
+
+  /* ------------------------------------------------------- cart sheet --- */
+
+  .sheet-scrim {
+    position: absolute; inset: 0; z-index: 30;
+    background: rgba(24,30,34,0.45);
+    opacity: 0; visibility: hidden;
+    transition: opacity 220ms ease, visibility 220ms ease;
+    border: none; padding: 0; cursor: pointer;
+  }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 31;
+    background: var(--linen);
+    border-top: 1px solid var(--gold);
+    border-radius: 20px 20px 0 0;
+    padding: 1.2rem 1.4rem 1.6rem;
+    transform: translateY(105%);
+    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 70%;
+    overflow-y: auto;
+  }
+  .phone.cart-open .sheet { transform: translateY(0); }
+  .phone.cart-open .sheet-scrim { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .sheet, .sheet-scrim { transition: none; } }
+  .sheet__grab { width: 2.4rem; height: 4px; border-radius: 2px; background: rgba(61,74,82,0.3); margin: 0 auto 1rem; }
+  .cline { display: flex; gap: 0.8rem; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(196,162,103,0.4); }
+  .cline .thumb { width: 3.2rem; height: 3.6rem; overflow: hidden; flex: none; }
+  .cline h3 { font-size: 0.92rem; margin: 0; }
+  .cline .var { font-style: italic; font-size: 0.82rem; margin: 0; }
+  .cline .amt { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .qty { display: inline-flex; border: 1px solid rgba(61,74,82,0.3); }
+  .qty button { width: 1.6rem; background: none; border: none; color: var(--navy); cursor: pointer; }
+  .qty span { width: 1.7rem; text-align: center; font-variant-numeric: tabular-nums; }
+  .subtotal { display: flex; justify-content: space-between; font-family: var(--font-display); color: var(--navy); font-size: 1.05rem; margin: 0.9rem 0 0.2rem; }
+  .ship-note { font-size: 0.85rem; font-style: italic; margin-bottom: 0.9rem; }
+  .empty { text-align: center; font-style: italic; padding: 1.4rem 0; }
+
+  /* ------------------------------------------------------ bottom tabs --- */
+
+  .tabbar {
+    display: flex;
+    background: var(--linen);
+    border-top: 1px solid var(--gold);
+    padding: 0.55rem 0.4rem calc(0.55rem + 6px);
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.28rem;
+    background: none; border: none;
+    color: var(--slate);
+    cursor: pointer;
+    font-family: var(--font-label);
+    font-size: 0.52rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.3rem 0;
+    position: relative;
+  }
+  .tab svg { opacity: 0.65; }
+  .tab[aria-current='true'] { color: var(--brick); }
+  .tab[aria-current='true'] svg { opacity: 1; stroke: var(--brick); }
+  .tab .badge {
+    position: absolute;
+    top: -0.1rem; right: 24%;
+    min-width: 1rem; height: 1rem;
+    border-radius: 0.5rem;
+    background: var(--brick);
+    color: var(--linen);
+    font-size: 0.55rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 300ms cubic-bezier(0.34, 1.8, 0.64, 1);
+  }
+  .tab .badge[data-count='0'] { visibility: hidden; }
+  .tab .badge.bounce { transform: scale(1.35); }
+</style>
+
+<p class="mock-note">Summit &amp; Stitch · React Native app — interactive mockup</p>
+
+<div class="phone" id="Phone">
+  <div class="notch"></div>
+
+  <div class="screens">
+
+    <!-- ============================================= SHOP: home -->
+    <div class="screen is-active" data-screen="shop">
+      <div class="app-hero">
+        <svg class="app-hero__peaks" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true">
+          <polygon points="0,160 0,100 70,40 130,95 190,55 260,120 320,30 400,110 400,160" fill="#16222F" opacity="0.9"/>
+          <polygon points="0,160 0,130 90,90 180,135 290,95 400,140 400,160" fill="#101A24"/>
+        </svg>
+        <span class="label">Colorado Springs, CO</span>
+        <h1>Summit &amp; Stitch</h1>
+        <p class="tag">Made by hand. Built to keep.</p>
+      </div>
+
+      <div class="pad">
+        <span class="label">The lineup</span>
+        <h2 style="font-size: 1.4rem;">Beanies</h2>
+        <div class="grid2">
+          <div class="pcard" data-open-product>
+            <div class="art"><div class="knit knit--navy" style="position:absolute;inset:0;"></div></div>
+            <h3>Fitted Cuff</h3>
+            <p class="price">FROM $75</p>
+            <div class="dots"><span class="dot dot--linen"></span><span class="dot dot--navy"></span><span class="dot dot--slate"></span><span class="dot dot--brick"></span></div>
+          </div>
+          <div class="pcard" data-open-product>
+            <div class="art"><div class="knit knit--brick" style="position:absolute;inset:0;"></div></div>
+            <h3>Slouchy</h3>
+            <p class="price">FROM $80</p>
+            <div class="dots"><span class="dot dot--linen"></span><span class="dot dot--navy"></span><span class="dot dot--slate"></span><span class="dot dot--brick"></span></div>
+          </div>
+        </div>
+
+        <div class="banner">
+          <div>
+            <span class="label" style="color: var(--sage);">Limited run</span>
+            <p><strong style="font-family: var(--font-display); color: var(--navy);">Cable-Knit Pullover</strong><br>8–10 pieces per run. Waitlist open.</p>
+          </div>
+          <button class="btn btn--ghost">Waitlist</button>
+        </div>
+
+        <div class="banner">
+          <div>
+            <span class="label" style="color: var(--sage);">New drops</span>
+            <p>Get a push when something comes off the needles.</p>
+          </div>
+          <button class="btn" data-notify>Notify me</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================== SHOP: product detail -->
+    <div class="screen" data-screen="product">
+      <div class="back-row">
+        <button class="back-btn" data-back-shop>&larr; Beanies</button>
+        <span class="label">Hand-knit to order</span>
+      </div>
+      <div class="pdp-art">
+        <div class="knit knit--navy" id="PdpArt" style="position:absolute;inset:0;"><span class="art-tag" id="PdpTag">Clay miniature · Fitted Cuff · Midnight Navy</span></div>
+      </div>
+      <div class="pdp-body">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.15rem;">Fitted Cuff Beanie</h2>
+        <p class="price">$78</p>
+
+        <span class="label">Colorway — <em id="PdpColorway" style="font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-size: 0.85rem; color: var(--navy);">Midnight Navy</em></span>
+        <div class="swatches" role="group" aria-label="Colorway">
+          <button class="swatch swatch--linen" data-cw="Aged Linen" data-knit="knit--linen" data-stock="2" aria-pressed="false" aria-label="Aged Linen"></button>
+          <button class="swatch swatch--navy" data-cw="Midnight Navy" data-knit="knit--navy" data-stock="7" aria-pressed="true" aria-label="Midnight Navy"></button>
+          <button class="swatch swatch--slate" data-cw="Slate" data-knit="knit--slate" data-stock="4" aria-pressed="false" aria-label="Slate"></button>
+          <button class="swatch swatch--brick" data-cw="Faded Brick" data-knit="knit--brick" data-stock="1" aria-pressed="false" aria-label="Faded Brick"></button>
+        </div>
+        <p class="stock" id="PdpStock"></p>
+
+        <button class="btn btn--full" data-add-cart>Add to cart</button>
+
+        <p class="lead">Hand-knit to order — allow 2–3 weeks before it ships.</p>
+        <p style="font-size: 0.95rem;">The hat we started with, and still the one we reach for. Merino/alpaca blend, deep folded cuff, sits clean over the ears without bulk.</p>
+        <p style="font-size: 0.9rem;"><span class="label" style="display:block; margin-bottom:0.3rem;">Care</span>Hand wash cool · lay flat to dry · air it between wears.</p>
+      </div>
+    </div>
+
+    <!-- ========================================== OUR STORY tab -->
+    <div class="screen" data-screen="story">
+      <div class="story-hero">
+        <div class="knit knit--gold" style="position:absolute;inset:0;"><span class="art-tag">Clay miniature · kitchen table, two figures knitting</span></div>
+      </div>
+      <div class="prose">
+        <span class="label">Our story</span>
+        <h2>Two of us, a pair of needles, and the Front Range</h2>
+        <p>Summit &amp; Stitch started at our kitchen table — one of us knitting, the other keeping the coffee going. We make things slowly, on purpose.</p>
+        <p>Every piece is knit by hand in Colorado Springs, one skein at a time. No factory, no season-chasing. We'd rather make ten pieces that last a decade than a hundred that don't.</p>
+        <p>We believe things worth having are worth waiting for, and worth keeping — that belief runs deeper than knitwear for us.</p>
+        <button class="btn btn--ghost" style="margin-top: 0.4rem;">How it's made &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ============================================ JOURNAL tab -->
+    <div class="screen" data-screen="journal">
+      <div class="pad">
+        <span class="label">Journal</span>
+        <h2 style="font-size: 1.4rem;">From the needles</h2>
+
+        <article class="jcard">
+          <div class="art"><div class="knit knit--brick" style="position:absolute;inset:0;"><span class="art-tag">Clay miniature · brick yarn wound on swift</span></div></div>
+          <div class="body">
+            <span class="date">Drop · Jul 12</span>
+            <h3>Faded Brick is back</h3>
+            <p>Six Fitted Cuffs and four Slouchies in the colorway you kept asking about. Gone by Sunday, probably.</p>
+          </div>
+        </article>
+
+        <article class="jcard">
+          <div class="art"><div class="knit knit--sage" style="position:absolute;inset:0;"><span class="art-tag">Clay miniature · market stall at dawn</span></div></div>
+          <div class="body">
+            <span class="date">Behind the scenes · Jul 3</span>
+            <h3>5 a.m. at the market</h3>
+            <p>What our Saturday actually looks like: thermos, folding table, and the good kind of cold hands.</p>
+          </div>
+        </article>
+
+        <article class="jcard">
+          <div class="art"><div class="knit knit--linen" style="position:absolute;inset:0;"><span class="art-tag">Clay miniature · cabled swatch in progress</span></div></div>
+          <div class="body">
+            <span class="date">Craft · Jun 20</span>
+            <h3>Why cables take three times as long</h3>
+            <p>Crossing stitches is slow arithmetic. It's also why the pullover run is only ever 8–10 pieces.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ============================================= MARKET tab -->
+    <div class="screen" data-screen="market">
+      <div class="map" role="img" aria-label="Map placeholder with a pin on Colorado Springs">
+        <span class="pin"></span>
+      </div>
+      <div class="pad">
+        <span class="label">Find us</span>
+        <h2 style="font-size: 1.4rem;">At the market</h2>
+
+        <div class="mrow">
+          <span class="day">SAT<br>19</span>
+          <div><h3>Colorado Farm &amp; Art Market</h3><p>9am–1pm · Ivywild School</p></div>
+        </div>
+        <div class="mrow">
+          <span class="day">SUN<br>20</span>
+          <div><h3>Old Colorado City Market</h3><p>10am–2pm · Bancroft Park</p></div>
+        </div>
+        <div class="mrow">
+          <span class="day">DEC<br>—</span>
+          <div><h3>Holiday Makers Fair</h3><p>Dates announced in the Journal</p></div>
+        </div>
+
+        <p style="font-style: italic; font-size: 0.95rem; margin-top: 1rem;">Market tip: we bring every colorway on Saturdays. Come squeeze the yarn — we like visitors.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- cart sheet -->
+  <button class="sheet-scrim" data-close-cart aria-label="Close cart"></button>
+  <div class="sheet" role="dialog" aria-label="Cart">
+    <div class="sheet__grab"></div>
+    <h2 style="font-size: 1.2rem;">Your cart</h2>
+    <div id="CartLines"><p class="empty">Your cart is empty.</p></div>
+    <div id="CartFooter" hidden>
+      <p class="subtotal"><span>Subtotal</span><span id="CartSubtotal">$0</span></p>
+      <p class="ship-note">Checkout opens Shopify secure checkout. Free U.S. shipping over $100.</p>
+      <button class="btn btn--full">Check out</button>
+    </div>
+  </div>
+
+  <!-- tab bar -->
+  <nav class="tabbar" aria-label="App tabs">
+    <button class="tab" data-tab="shop" aria-current="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D4A52" stroke-width="1.5"><path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8Z"/><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10"/></svg>
+      Shop
+      <span class="badge" id="CartBadge" data-count="0">0</span>
+    </button>
+    <button class="tab" data-tab="story">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D4A52" stroke-width="1.5"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 5.5v15"/></svg>
+      Story
+    </button>
+    <button class="tab" data-tab="journal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D4A52" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+      Journal
+    </button>
+    <button class="tab" data-tab="market">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D4A52" stroke-width="1.5"><path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg>
+      Market
+    </button>
+  </nav>
+</div>
+
+<p class="mock-sub">Interactive HTML mockup of the Expo / React Native companion app · the real app uses Reanimated, NativeWind, and the Shopify Storefront API · Playfair Display &amp; Crimson Text render on device</p>
+
+<script>
+(function () {
+  'use strict';
+
+  var phone = document.getElementById('Phone');
+
+  /* tabs + product push */
+  function showScreen(name) {
+    phone.querySelectorAll('[data-screen]').forEach(function (s) {
+      s.classList.toggle('is-active', s.dataset.screen === name);
+    });
+    var tabName = name === 'product' ? 'shop' : name;
+    phone.querySelectorAll('.tab').forEach(function (t) {
+      t.setAttribute('aria-current', t.dataset.tab === tabName ? 'true' : 'false');
+    });
+  }
+
+  phone.addEventListener('click', function (e) {
+    var tab = e.target.closest('.tab');
+    if (tab) { showScreen(tab.dataset.tab); return; }
+    if (e.target.closest('[data-open-product]')) { showScreen('product'); return; }
+    if (e.target.closest('[data-back-shop]')) { showScreen('shop'); return; }
+  });
+
+  /* swatch picker with spring ring */
+  var pdpArt = document.getElementById('PdpArt');
+  var pdpTag = document.getElementById('PdpTag');
+  var pdpColorway = document.getElementById('PdpColorway');
+  var pdpStock = document.getElementById('PdpStock');
+  var knits = ['knit--linen', 'knit--navy', 'knit--slate', 'knit--brick'];
+  var LOW = 4;
+  var current = { cw: 'Midnight Navy', stock: 7 };
+
+  function pickSwatch(btn) {
+    phone.querySelectorAll('.swatch').forEach(function (s) { s.setAttribute('aria-pressed', 'false'); });
+    btn.setAttribute('aria-pressed', 'true');
+    current.cw = btn.dataset.cw;
+    current.stock = parseInt(btn.dataset.stock, 10);
+    pdpColorway.textContent = current.cw;
+    knits.forEach(function (k) { pdpArt.classList.remove(k); });
+    pdpArt.classList.add(btn.dataset.knit);
+    pdpTag.textContent = 'Clay miniature · Fitted Cuff · ' + current.cw;
+    pdpStock.textContent = current.stock <= LOW ? (current.stock === 1 ? 'Only 1 left' : 'Only ' + current.stock + ' left') : '';
+  }
+
+  phone.addEventListener('click', function (e) {
+    var sw = e.target.closest('.swatch');
+    if (sw) pickSwatch(sw);
+  });
+
+  /* cart */
+  var cart = [];
+  var badge = document.getElementById('CartBadge');
+  var linesEl = document.getElementById('CartLines');
+  var footerEl = document.getElementById('CartFooter');
+  var subEl = document.getElementById('CartSubtotal');
+
+  function money(n) { return '$' + (n % 1 === 0 ? n : n.toFixed(2)); }
+
+  function renderCart() {
+    var count = cart.reduce(function (n, l) { return n + l.qty; }, 0);
+    badge.textContent = count;
+    badge.setAttribute('data-count', count);
+    if (!cart.length) {
+      linesEl.innerHTML = '<p class="empty">Your cart is empty.</p>';
+      footerEl.hidden = true;
+      return;
+    }
+    footerEl.hidden = false;
+    subEl.textContent = money(cart.reduce(function (n, l) { return n + l.qty * 78; }, 0));
+    linesEl.innerHTML = cart.map(function (l, i) {
+      return '<div class="cline" data-i="' + i + '">' +
+        '<span class="thumb"><span class="knit ' + l.knit + '" style="position:relative;display:block;width:100%;height:100%;"></span></span>' +
+        '<div><h3>Fitted Cuff Beanie</h3><p class="var">' + l.cw + '</p>' +
+        '<span class="qty"><button data-d="-1" aria-label="Less">&minus;</button><span>' + l.qty + '</span><button data-d="1" aria-label="More">+</button></span></div>' +
+        '<span class="amt">' + money(l.qty * 78) + '</span></div>';
+    }).join('');
+  }
+
+  phone.addEventListener('click', function (e) {
+    if (e.target.closest('[data-add-cart]')) {
+      var knit = 'knit--' + current.cw.split(' ').pop().toLowerCase().replace('linen', 'linen').replace('navy', 'navy');
+      var map = { 'Aged Linen': 'knit--linen', 'Midnight Navy': 'knit--navy', 'Slate': 'knit--slate', 'Faded Brick': 'knit--brick' };
+      var line = cart.find(function (l) { return l.cw === current.cw; });
+      if (line) line.qty += 1;
+      else cart.push({ cw: current.cw, qty: 1, knit: map[current.cw] });
+      renderCart();
+      badge.classList.add('bounce');
+      setTimeout(function () { badge.classList.remove('bounce'); }, 320);
+      phone.classList.add('cart-open');
+      return;
+    }
+    if (e.target.closest('[data-close-cart]')) { phone.classList.remove('cart-open'); return; }
+    var qbtn = e.target.closest('.cline [data-d]');
+    if (qbtn) {
+      var l = cart[parseInt(qbtn.closest('[data-i]').dataset.i, 10)];
+      l.qty += parseInt(qbtn.dataset.d, 10);
+      if (l.qty <= 0) cart.splice(cart.indexOf(l), 1);
+      renderCart();
+      return;
+    }
+    if (e.target.closest('[data-notify]')) {
+      var b = e.target.closest('[data-notify]');
+      b.textContent = 'You’re in';
+      b.disabled = true;
+      b.style.opacity = '0.7';
+    }
+  });
+
+  pickSwatch(phone.querySelector('.swatch[aria-pressed="true"]'));
+})();
+</script>
